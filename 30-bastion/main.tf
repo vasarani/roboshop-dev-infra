@@ -1,18 +1,4 @@
-resource "aws_instance" "bastion" {
-  ami = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id = local.public_subnet_id
-  vpc_security_group_ids = [local.bastion_sg_id]
-  iam_instance_profile = aws_iam_instance_profile.bastion.name
 
-  tags = merge(
-    local.common_tags,
-    {
-        Name = "${var.project}-${var.environment}-bastion"
-    }
-  )
-
-}
 
 resource "aws_iam_role" "bastion" {
   name = "RoboshopDevBastion"
@@ -40,11 +26,26 @@ resource "aws_iam_role" "bastion" {
 
 resource "aws_iam_role_policy_attachment" "bastion" {
   role = aws_iam_role.bastion.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-}
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}  
 
 # Create the instance profile
 resource "aws_iam_instance_profile" "bastion" {
   name = "${var.project}-${var.environment}-bastion"
   role = aws_iam_role.bastion.name
+}
+resource "aws_instance" "bastion" {
+  ami = local.ami_id
+  instance_type = "t3.micro"
+  subnet_id = local.public_subnet_id
+  vpc_security_group_ids = [local.bastion_sg_id]
+  iam_instance_profile = aws_iam_instance_profile.bastion.name
+
+  tags = merge(
+    local.common_tags,
+    {
+        Name = "${var.project}-${var.environment}-bastion"
+    }
+  )
+
 }
