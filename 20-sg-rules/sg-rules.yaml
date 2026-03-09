@@ -1,0 +1,23 @@
+bastion:
+- name: bastion_internet
+  port: 22
+  scr: internet 
+  dest: bastion
+  
+
+mobgodb:
+- name: mongodb_bastion
+  port: 22
+  scr: bastion 
+  dest: mongodb
+
+- name: mongodb_catalogue
+  port: 27017
+  scr: catalogue 
+  dest: mongodb 
+
+- name: mongodb_user 
+  port: 27017
+  scr: user 
+  dest: mongodb 
+
