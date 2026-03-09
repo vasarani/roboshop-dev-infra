@@ -11,7 +11,6 @@ terraform {
     region       = "us-east-1"
     encrypt      = true
     use_lockfile = true
-    dynamodb_table = "rawsd-remote-state-lock-dev"
   }
 }
 
