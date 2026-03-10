@@ -19,6 +19,7 @@ resource "aws_security_group_rule" "mongodb_bastion" {
   security_group_id        = local.mongodb_sg_id
 }
 
+
 resource "aws_security_group_rule" "mongodb_catalogue" {
   type                     = "ingress"
   from_port                = 27017
@@ -35,4 +36,15 @@ resource "aws_security_group_rule" "mongodb_user" {
   protocol                 = "tcp"
   source_security_group_id = local.user_sg_id
   security_group_id        = local.mongodb_sg_id
+}
+
+
+resource "aws_security_group_rule" "redis_bastion" {
+  type      = "ingress"
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+  # where traffic is comming from
+  source_security_group_id = local.bastion_sg_id
+  security_group_id        = local.redis_sg_id
 }
