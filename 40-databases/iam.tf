@@ -25,3 +25,9 @@ resource "aws_iam_role" "mysql" {
 
 }
 
+resource "aws_iam_policy" "mysql" {
+  name = "S3ReadOnlyAccessPolicy"
+  description =  "A policy for MySQL Ec2 instance"
+  policy = file("mysql-iam-policy.json")
+}
+
