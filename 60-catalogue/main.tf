@@ -127,45 +127,61 @@ resource "aws_launch_template" "catalogue" {
 } 
 
 
-resource "aws_autoscaling_group" "catalogue" {
-  name = "${var.project}-${var.environment}-catalogue"
-  max_size =  10
-  min_size =   1
-  health_check_grace_period = 120
-  health_check_type = "ELB"
-  desired_capacity = 1
-  force_delete = false
+# resource "aws_autoscaling_group" "catalogue" {
+#   name = "${var.project}-${var.environment}-catalogue"
+#   max_size =  10
+#   min_size =   1
+#   health_check_grace_period = 120
+#   health_check_type = "ELB"
+#   desired_capacity = 1
+#   force_delete = false
 
-  launch_template {
-    id = aws_launch_template.catalogue.id
-    version = "$Latest"
-  }  
-    instance_refresh {
-      strategy = "Rolling"
-      preferences {
-        min_healthy_percentage = 50
-      }
-      triggers = ["launch_template"]
-    }
+#   launch_template {
+#     id = aws_launch_template.catalogue.id
+#     version = "$Latest"
+#   }  
+#     instance_refresh {
+#       strategy = "Rolling"
+#       preferences {
+#         min_healthy_percentage = 50
+#       }
+#       triggers = ["launch_template"]
+#     }
 
-  vpc_zone_identifier = [ local.private_subnet_id ]
-  target_group_arns = [aws_lb_target_group.catalogue.arn]
-  dynamic "tag" {
-    for_each = merge(
-      local.common_tags,
-    {
-        Name = "${var.project}-${var.environment}-catalogue"
-    }
-    )
-    content {
-    key = each.key
-    value = each.value
-    propagate_at_launch = true
-    }
-  }
-# within 15mins autoscaling should be successful
-  timeouts {
-    delete = "15m"
-  }
+#   vpc_zone_identifier = [ local.private_subnet_id ]
+#   target_group_arns = [aws_lb_target_group.catalogue.arn]
+#   dynamic "tag" {
+#     for_each = merge(
+#       local.common_tags,
+#     {
+#         Name = "${var.project}-${var.environment}-catalogue"
+#     }
+#     )
+#     content {
+#     key = each.key
+#     value = each.value
+#     propagate_at_launch = true
+#     }
+#   }
+# # within 15mins autoscaling should be successful
+#   timeouts {
+#     delete = "15m"
+#   }
 
-}
+# }
+
+# resource "aws_autoscaling_policy" "catalogue" {
+#   autoscaling_group_name = aws_autoscaling_group.catalogue.name
+#   name = "${var.project}-${var.environment}-catalogue"
+#   policy_type = "TargetTrackingScaling"
+#   target_tracking_configuration {
+#     predefined_metric_specification {
+#       predefined_metric_type = "ASGAverageCPUUtilization"
+#     }
+#     target_value = 70.0
+#   }
+# }
+
+# resource "aws_lb_listener_rule" "catalogue" {
+#   listener_arn = 
+# }
