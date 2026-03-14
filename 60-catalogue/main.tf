@@ -174,6 +174,7 @@ resource "aws_autoscaling_policy" "catalogue" {
   autoscaling_group_name = aws_autoscaling_group.catalogue.name
   name = "${var.project}-${var.environment}-catalogue"
   policy_type = "TargetTrackingScaling"
+  estimated_instance_warmup = 120
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
@@ -208,5 +209,7 @@ resource "terraform_data" "catalogue_delete" {
   provisioner "local-exec" {
     command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}"
   }
-}
+}  
+
+
 
